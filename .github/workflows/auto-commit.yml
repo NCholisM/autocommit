@@ -1,29 +1,30 @@
-name: Autocommit 5 Times a Day
+name: Update Contribution Graph
 
 on:
   schedule:
-    # Menjadwalkan agar job ini berjalan 5 kali sehari (setiap 4 jam)
-    - cron: "0 0,4,8,12,16 * * *"
-  workflow_dispatch:
+    - cron: "0 0 * * *" # Menjalankan setiap hari pada tengah malam UTC
+  workflow_dispatch: # Memungkinkan menjalankan secara manual
 
 jobs:
-  autocommit:
+  update-graph:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Git
+      - name: Auto-commit
+        run: |
+          echo "Auto update on $(date)" >> README.md
+
+      - name: Configure Git
         run: |
           git config --global user.name "NCholisM"
           git config --global user.email "cholis789rt@gmail.com"
+          git remote set-url origin https://NCholisM:${{ secrets.GH_TOKEN }}@github.com/NCholisM/autocommit.git
 
-      - name: Create commit
+      - name: Commit and Push Changes
         run: |
-          # Membuat perubahan di file yang ingin di-commit
-          echo "Autocommit at $(date)" >> autocommit.txt
-          git add autocommit.txt
-          git commit -m "Autocommit at $(date)"
-          git push https://NCholisM:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          git add .
+          git commit -m "Auto commit on $(date)" || echo "No changes to commit"
+          git push origin main
