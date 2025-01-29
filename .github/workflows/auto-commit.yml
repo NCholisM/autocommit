@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "Autocommit at $(date)" >> autocommit.txt
           git add autocommit.txt
-          git commit -m "Autocommit at $(date)" || echo "No changes to commit"
+          git commit --author="NCholisM <cholis789rt@gmail.com>" -m "Autocommit at $(date)"
 
       - name: Push changes
         run: |
