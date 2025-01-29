@@ -1,0 +1,22 @@
+name: Update Contribution Graph
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Menjalankan setiap hari pada tengah malam UTC
+
+jobs:
+  update-graph:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Auto-commit
+        run: |
+          echo "Auto update on $(date)" >> README.md
+          git config user.name "YourGitHubUsername"
+          git config user.email "YourGitHubEmail"
+          git add .
+          git commit -m "Auto commit on $(date)"
+          git push
