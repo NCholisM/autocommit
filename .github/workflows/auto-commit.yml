@@ -3,7 +3,7 @@ name: Update Contribution Graph
 on:
   schedule:
     - cron: "0 0 * * *" # Menjalankan setiap hari pada tengah malam UTC
-  workflow_dispatch: # Menambahkan opsi untuk menjalankan workflow secara manual
+  workflow_dispatch: # Memungkinkan menjalankan secara manual
 
 jobs:
   update-graph:
@@ -16,8 +16,15 @@ jobs:
       - name: Auto-commit
         run: |
           echo "Auto update on $(date)" >> README.md
-          git config user.name "NCholisM"
-          git config user.email "cholis789rt@gmail.com"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "NCholisM"
+          git config --global user.email "cholis789rt@gmail.com"
+          git remote set-url origin https://NCholisM:${{ secrets.GH_TOKEN }}@github.com/NCholisM/autocommit.git
+
+      - name: Commit and Push Changes
+        run: |
           git add .
           git commit -m "Auto commit on $(date)" || echo "No changes to commit"
-          git push
+          git push origin main
