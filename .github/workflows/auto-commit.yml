@@ -2,7 +2,6 @@ name: Autocommit 5 Times a Day
 
 on:
   schedule:
-    # Menjadwalkan agar job ini berjalan 5 kali sehari (setiap 4 jam)
     - cron: "0 0,4,8,12,16 * * *"
   workflow_dispatch:
 
@@ -13,19 +12,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Mengambil seluruh riwayat git untuk menghindari error merge
 
       - name: Set up Git
         run: |
           git config --global user.name "NCholisM"
           git config --global user.email "cholis789rt@gmail.com"
 
+      - name: Pull latest changes
+        run: |
+          git pull --rebase origin main  # Menarik perubahan terbaru
+
       - name: Create commit
         run: |
-          # Membuat perubahan di file yang ingin di-commit
           echo "Autocommit at $(date)" >> autocommit.txt
           git add autocommit.txt
-          git commit -m "Autocommit at $(date)"
+          git commit -m "Autocommit at $(date)" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
           git push https://oauth2:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
