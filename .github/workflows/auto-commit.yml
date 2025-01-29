@@ -24,6 +24,6 @@ jobs:
           echo "Autocommit at $(date)" >> autocommit.txt
           git add autocommit.txt
           git commit -m "Autocommit at $(date)"
-          git push https://NCholisM:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
