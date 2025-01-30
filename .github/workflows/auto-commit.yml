@@ -1,4 +1,4 @@
-name: Autocommit 5 Times a Day
+name: Autocommit 10 Times
 
 on:
   schedule:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Mengambil seluruh riwayat git untuk menghindari error merge
+          fetch-depth: 0 # Mengambil seluruh riwayat git untuk menghindari error merge
 
       - name: Set up Git
         run: |
@@ -23,11 +23,13 @@ jobs:
         run: |
           git pull --rebase origin main  # Menarik perubahan terbaru
 
-      - name: Create commit
+      - name: Create multiple commits
         run: |
-          echo "Autocommit at $(date)" >> autocommit.txt
-          git add autocommit.txt
-          git commit --author="NCholisM <cholis789rt@gmail.com>" -m "Autocommit at $(date)"
+          for i in {1..10}; do
+            echo "Autocommit #$i at $(date)" >> autocommit.txt
+            git add autocommit.txt
+            git commit --author="NCholisM <cholis789rt@gmail.com>" -m "Autocommit #$i at $(date)"
+          done
 
       - name: Push changes
         run: |
