@@ -25,7 +25,7 @@ jobs:
 
       - name: Create multiple commits
         run: |
-          for i in {1..50}; do
+          for i in {1..500}; do
             echo "Autocommit #$i at $(date)" >> autocommit.txt
             git add autocommit.txt
             git commit --author="NCholisM <cholis789rt@gmail.com>" -m "Autocommit #$i at $(date)"
