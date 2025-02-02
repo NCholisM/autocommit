@@ -1,0 +1,38 @@
+name: Autocommit 50 Times
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Menjadwalkan hanya pada jam 07:00
+  workflow_dispatch:
+
+jobs:
+  autocommit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Mengambil seluruh riwayat git untuk menghindari error merge
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "NCholisM"
+          git config --global user.email "cholis789rt@gmail.com"
+
+      - name: Pull latest changes
+        run: |
+          git pull --rebase origin main  # Menarik perubahan terbaru
+
+      - name: Create multiple commits
+        run: |
+          for i in {1..50}; do
+            echo "Autocommit #$i at $(date)" >> autocommit.txt
+            git add autocommit.txt
+            git commit --author="NCholisM <cholis789rt@gmail.com>" -m "Autocommit #$i at $(date)"
+          done
+
+      - name: Push changes
+        run: |
+          git push https://oauth2:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
